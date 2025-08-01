@@ -1,18 +1,15 @@
 package org.example.scheduleapi.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.Date;
 
 @Entity
 @Getter
 @NoArgsConstructor
-public class Schedule {
+@Table(name = "schedules")
+public class Schedule extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -21,7 +18,13 @@ public class Schedule {
     private String contents;
     private String author;
     private String password;
-    private Date created_at;
-    private Date updated_at;
+
+    @Builder
+    public Schedule(String title, String contents, String author, String password) {
+        this.title = title;
+        this.contents = contents;
+        this.author = author;
+        this.password = password;
+    }
 
 }
