@@ -5,6 +5,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 @NoArgsConstructor
@@ -18,6 +21,9 @@ public class Schedule extends BaseEntity {
     private String contents;
     private String author;
     private String password;
+
+    @OneToMany(mappedBy = "schedule")
+    private List<ScheduleComment> comments = new ArrayList<>();
 
     @Builder
     public Schedule(String title, String contents, String author, String password) {
