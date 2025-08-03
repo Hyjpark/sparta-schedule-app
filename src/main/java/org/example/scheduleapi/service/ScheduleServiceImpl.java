@@ -52,7 +52,7 @@ public class ScheduleServiceImpl implements SchedulesService {
     @Override
     @Transactional(readOnly = true)
     public ScheduleResponseDto findScheduleById(Long id) {
-        return new ScheduleResponseDto(scheduleRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Dose not exist id =" + id)));
+        return new ScheduleResponseDto(scheduleRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Does not exist id =" + id)));
     }
 
     @Override
@@ -63,11 +63,7 @@ public class ScheduleServiceImpl implements SchedulesService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Title or author or password cannot be null");
         }
 
-        Schedule schedule = scheduleRepository.findById(id).orElse(null);
-
-        if (schedule == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Dose not exist id =" + id);
-        }
+        Schedule schedule = scheduleRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Does not exist id =" + id));
 
         if (!password.equals(schedule.getPassword())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Password does not match");
@@ -86,11 +82,7 @@ public class ScheduleServiceImpl implements SchedulesService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Password cannot be null");
         }
 
-        Schedule schedule = scheduleRepository.findById(id).orElse(null);
-
-        if (schedule == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Dose not exist id =" + id);
-        }
+        Schedule schedule = scheduleRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Does not exist id =" + id));
 
         if (!password.equals(schedule.getPassword())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Password does not match");
