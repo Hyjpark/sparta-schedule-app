@@ -26,8 +26,15 @@ public class ScheduleServiceImpl implements SchedulesService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ScheduleResponseDto> findAllSchedules() {
-        List<Schedule> scheduleList = scheduleRepository.findAll();
+    public List<ScheduleResponseDto> findAllSchedules(String author) {
+        List<Schedule> scheduleList = new ArrayList<>();
+
+        if (author == null) {
+            scheduleList = scheduleRepository.findAll();
+        } else {
+            scheduleList = scheduleRepository.findAllByAuthor(author);
+        }
+
         List<ScheduleResponseDto> scheduleResponseDtoList = new ArrayList<>();
 
         for (Schedule schedule : scheduleList) {

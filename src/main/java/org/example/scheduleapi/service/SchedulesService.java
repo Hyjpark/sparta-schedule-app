@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface SchedulesService {
      ScheduleResponseDto saveSchedule(ScheduleRequestDto requestDto);
-     List<ScheduleResponseDto> findAllSchedules();
+     List<ScheduleResponseDto> findAllSchedules(String author);
 }

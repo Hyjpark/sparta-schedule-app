@@ -23,7 +23,7 @@ public class ScheduleController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ScheduleResponseDto>> findAllSchedules() {
-        return new ResponseEntity<>(schedulesService.findAllSchedules(), HttpStatus.OK);
+    public ResponseEntity<List<ScheduleResponseDto>> findAllSchedules(@RequestParam(required = false) String author) {
+        return new ResponseEntity<>(schedulesService.findAllSchedules(author), HttpStatus.OK);
     }
 }
