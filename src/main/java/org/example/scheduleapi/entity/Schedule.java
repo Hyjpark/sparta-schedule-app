@@ -22,7 +22,7 @@ public class Schedule extends BaseEntity {
     private String author;
     private String password;
 
-    @OneToMany(mappedBy = "schedule")
+    @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
     @Builder
