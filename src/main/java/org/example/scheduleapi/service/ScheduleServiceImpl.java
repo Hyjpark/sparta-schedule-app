@@ -2,8 +2,10 @@ package org.example.scheduleapi.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.example.scheduleapi.dto.ScheduleDetailResponseDto;
 import org.example.scheduleapi.dto.ScheduleRequestDto;
 import org.example.scheduleapi.dto.ScheduleResponseDto;
+import org.example.scheduleapi.entity.Comment;
 import org.example.scheduleapi.entity.Schedule;
 import org.example.scheduleapi.repository.ScheduleRepository;
 import org.springframework.data.domain.Sort;
@@ -51,8 +53,8 @@ public class ScheduleServiceImpl implements SchedulesService {
 
     @Override
     @Transactional(readOnly = true)
-    public ScheduleResponseDto findScheduleById(Long id) {
-        return new ScheduleResponseDto(scheduleRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Does not exist id =" + id)));
+    public ScheduleDetailResponseDto findScheduleById(Long id) {
+        return new ScheduleDetailResponseDto(scheduleRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id =" + id)));
     }
 
     @Override

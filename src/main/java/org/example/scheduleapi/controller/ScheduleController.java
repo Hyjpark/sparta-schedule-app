@@ -1,6 +1,7 @@
 package org.example.scheduleapi.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.example.scheduleapi.dto.ScheduleDetailResponseDto;
 import org.example.scheduleapi.dto.ScheduleRequestDto;
 import org.example.scheduleapi.dto.ScheduleResponseDto;
 import org.example.scheduleapi.service.SchedulesService;
@@ -28,7 +29,7 @@ public class ScheduleController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ScheduleResponseDto> findScheduleById(@PathVariable Long id) {
+    public ResponseEntity<ScheduleDetailResponseDto> findScheduleById(@PathVariable Long id) {
         return new ResponseEntity<>(schedulesService.findScheduleById(id), HttpStatus.OK);
     }
 

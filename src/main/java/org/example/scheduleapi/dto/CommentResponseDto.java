@@ -1,5 +1,6 @@
 package org.example.scheduleapi.dto;
 
+import lombok.Builder;
 import lombok.Getter;
 import org.example.scheduleapi.entity.Comment;
 
@@ -15,6 +16,7 @@ public class CommentResponseDto {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
+    @Builder
     public CommentResponseDto(Comment comment) {
         this.id = comment.getId();
         this.scheduleId = comment.getSchedule().getId();
