@@ -78,4 +78,24 @@ public class ScheduleServiceImpl implements SchedulesService {
 
         return new ScheduleResponseDto(schedule);
     }
+
+    @Override
+    @Transactional
+    public void deleteSchedule(Long id, String password) {
+        if (password == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Password cannot be null");
+        }
+
+        Schedule schedule = scheduleRepository.findById(id).orElse(null);
+
+        if (schedule == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Dose not exist id =" + id);
+        }
+
+        if (!password.equals(schedule.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Password does not match");
+        }
+
+        scheduleRepository.delete(schedule);
+    }
 }
