@@ -54,4 +54,28 @@ public class ScheduleServiceImpl implements SchedulesService {
     public ScheduleResponseDto findScheduleById(Long id) {
         return new ScheduleResponseDto(scheduleRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Dose not exist id =" + id)));
     }
+
+    @Override
+    @Transactional
+    public ScheduleResponseDto updateSchedule(Long id, String title, String author, String password) {
+
+        if (title == null || author == null || password == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Title or author or password cannot be null");
+        }
+
+        Schedule schedule = scheduleRepository.findById(id).orElse(null);
+
+        if (schedule == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Dose not exist id =" + id);
+        }
+
+        if (!password.equals(schedule.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Password does not match");
+        }
+
+        schedule.update(title, author);
+        scheduleRepository.save(schedule);
+
+        return new ScheduleResponseDto(schedule);
+    }
 }
