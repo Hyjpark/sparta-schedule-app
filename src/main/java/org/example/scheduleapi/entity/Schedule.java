@@ -23,7 +23,7 @@ public class Schedule extends BaseEntity {
     private String password;
 
     @OneToMany(mappedBy = "schedule")
-    private List<ScheduleComment> comments = new ArrayList<>();
+    private List<Comment> comments = new ArrayList<>();
 
     @Builder
     public Schedule(String title, String contents, String author, String password) {
