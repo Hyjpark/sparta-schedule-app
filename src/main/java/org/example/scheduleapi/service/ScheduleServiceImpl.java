@@ -1,22 +1,20 @@
 package org.example.scheduleapi.service;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.example.scheduleapi.dto.ScheduleDetailResponseDto;
 import org.example.scheduleapi.dto.ScheduleRequestDto;
 import org.example.scheduleapi.dto.ScheduleResponseDto;
-import org.example.scheduleapi.entity.Comment;
 import org.example.scheduleapi.entity.Schedule;
+import org.example.scheduleapi.error.GlobalErrorCode;
+import org.example.scheduleapi.error.ScheduleErrorCode;
+import org.example.scheduleapi.error.exception.RestApiException;
 import org.example.scheduleapi.repository.ScheduleRepository;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +25,8 @@ public class ScheduleServiceImpl implements SchedulesService {
     @Override
     @Transactional
     public ScheduleResponseDto saveSchedule(ScheduleRequestDto requestDto) {
+        validate(requestDto);
+
         Schedule savedSchedule = scheduleRepository.save(requestDto.toEntity());
         return new ScheduleResponseDto(savedSchedule);
     }
@@ -54,7 +54,7 @@ public class ScheduleServiceImpl implements SchedulesService {
     @Override
     @Transactional(readOnly = true)
     public ScheduleDetailResponseDto findScheduleById(Long id) {
-        return new ScheduleDetailResponseDto(scheduleRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id =" + id)));
+        return new ScheduleDetailResponseDto(scheduleRepository.findById(id).orElseThrow(() -> new RestApiException(GlobalErrorCode.RESOURCE_NOT_FOUND)));
     }
 
     @Override
@@ -62,14 +62,14 @@ public class ScheduleServiceImpl implements SchedulesService {
     public ScheduleResponseDto updateSchedule(Long id, String title, String author, String password) {
 
         if (title == null || author == null || password == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Title or author or password cannot be null");
+            throw new RestApiException(GlobalErrorCode.INVALID_PARAMETER);
         }
 
-        Schedule schedule = scheduleRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Does not exist id =" + id));
+        if (title.length() > 30)
+            throw new RestApiException(ScheduleErrorCode.TITLE_LENGTH_LIMITS);
 
-        if (!password.equals(schedule.getPassword())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Password does not match");
-        }
+        Schedule schedule = scheduleRepository.findById(id).orElseThrow(() -> new RestApiException(GlobalErrorCode.RESOURCE_NOT_FOUND));
+        validatePassword(schedule, password);
 
         schedule.update(title, author);
         scheduleRepository.save(schedule);
@@ -81,15 +81,42 @@ public class ScheduleServiceImpl implements SchedulesService {
     @Transactional
     public void deleteSchedule(Long id, String password) {
         if (password == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Password cannot be null");
+            throw new RestApiException(GlobalErrorCode.INVALID_PARAMETER);
         }
 
-        Schedule schedule = scheduleRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Does not exist id =" + id));
-
-        if (!password.equals(schedule.getPassword())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Password does not match");
-        }
+        Schedule schedule = scheduleRepository.findById(id).orElseThrow(() -> new RestApiException(GlobalErrorCode.RESOURCE_NOT_FOUND));
+        validatePassword(schedule, password);
 
         scheduleRepository.delete(schedule);
+    }
+
+    private void validate(ScheduleRequestDto requestDto) {
+        if (requestDto.getTitle() == null || requestDto.getTitle().isBlank())
+            throw new RestApiException(GlobalErrorCode.INVALID_PARAMETER);
+        if (requestDto.getContents() == null || requestDto.getContents().isBlank())
+            throw new RestApiException(GlobalErrorCode.INVALID_PARAMETER);
+        if (requestDto.getAuthor() == null || requestDto.getAuthor().isBlank())
+            throw new RestApiException(GlobalErrorCode.INVALID_PARAMETER);
+        if (requestDto.getAuthor() == null || requestDto.getAuthor().isBlank())
+            throw new RestApiException(GlobalErrorCode.INVALID_PARAMETER);
+        if (requestDto.getPassword() == null || requestDto.getPassword().isBlank())
+            throw new RestApiException(GlobalErrorCode.INVALID_PARAMETER);
+
+        if (requestDto.getTitle().length() > 30)
+            throw new RestApiException(ScheduleErrorCode.TITLE_LENGTH_LIMITS);
+
+        if (requestDto.getContents().length() > 200)
+            throw new RestApiException(ScheduleErrorCode.CONTENTS_LENGTH_LIMITS);
+    }
+
+    private void validateId(Long id) {
+        if (id == null || id < 1)
+            throw new RestApiException(GlobalErrorCode.INVALID_PARAMETER);
+    }
+
+    private void validatePassword(Schedule schedule, String password) {
+        if (!password.equals(schedule.getPassword())) {
+            throw new RestApiException(GlobalErrorCode.PASSWORD_MISMATCH);
+        }
     }
 }

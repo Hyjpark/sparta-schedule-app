@@ -13,8 +13,8 @@ public class ScheduleDetailResponseDto {
     private String title;
     private String contents;
     private String author;
-    private LocalDateTime created_at;
-    private LocalDateTime updated_at;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     private List<CommentResponseDto> comments;
 
@@ -23,8 +23,8 @@ public class ScheduleDetailResponseDto {
         this.title = schedule.getTitle();
         this.contents = schedule.getContents();
         this.author = schedule.getAuthor();
-        this.created_at = schedule.getCreatedAt();
-        this.updated_at = schedule.getUpdatedAt();
+        this.createdAt = schedule.getCreatedAt();
+        this.updatedAt = schedule.getUpdatedAt();
         this.comments = schedule.getComments().stream()
                 .map(comment -> CommentResponseDto.builder()
                         .comment(comment).build())
