@@ -1,13 +1,9 @@
 package org.example.scheduleapi.dto;
 
 import lombok.Getter;
-import org.example.scheduleapi.entity.Comment;
 import org.example.scheduleapi.entity.Schedule;
 
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 public class ScheduleResponseDto {

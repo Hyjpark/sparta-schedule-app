@@ -1,6 +1,5 @@
 package org.example.scheduleapi.dto;
 
-import lombok.Builder;
 import lombok.Getter;
 import org.example.scheduleapi.entity.Schedule;
 

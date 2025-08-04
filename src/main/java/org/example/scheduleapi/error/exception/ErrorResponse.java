@@ -1,10 +1,9 @@
-package org.example.scheduleapi.exception;
+package org.example.scheduleapi.error.exception;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 
 
@@ -14,7 +13,7 @@ import java.util.List;
 @Builder
 @RequiredArgsConstructor
 public class ErrorResponse {
-    private final HttpStatus code;
+    private final String code;
     private final String message;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
