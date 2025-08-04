@@ -21,6 +21,12 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public CommentResponseDto saveComment(Long id, CommentRequestDto requestDto) {
+        if (requestDto.getContents() == null || requestDto.getPassword() == null || requestDto.getAuthor() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password and author name are required");
+        }
+
+        if (requestDto.getContents().length() > 100) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You can only post 100 comments.");
+
         Schedule schedule = scheduleRepository.getOne(id);
 
         int commentCount = commentRepository.countByScheduleId(id);

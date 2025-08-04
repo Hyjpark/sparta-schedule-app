@@ -27,6 +27,12 @@ public class ScheduleServiceImpl implements SchedulesService {
     @Override
     @Transactional
     public ScheduleResponseDto saveSchedule(ScheduleRequestDto requestDto) {
+        if (requestDto.getTitle() == null || requestDto.getContents() == null || requestDto.getTitle() == null || requestDto.getAuthor() == null)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Title and content cannot be null");
+
+        if (requestDto.getTitle().length() > 30 ||  requestDto.getContents().length() > 200)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The title and content are long.");
+
         Schedule savedSchedule = scheduleRepository.save(requestDto.toEntity());
         return new ScheduleResponseDto(savedSchedule);
     }
