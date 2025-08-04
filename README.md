@@ -308,3 +308,9 @@
   "message": "내용은 100자 이내로 제한됩니다."
 }
 ```
+
+---
+
+# ERD
+<img width="615" height="385" alt="캡처" src="https://github.com/user-attachments/assets/7f0d7d57-0a3f-4bf3-a53d-d84db36c9087" />
+
