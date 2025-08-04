@@ -7,6 +7,7 @@ import org.example.scheduleapi.dto.ScheduleRequestDto;
 import org.example.scheduleapi.dto.ScheduleResponseDto;
 import org.example.scheduleapi.entity.Comment;
 import org.example.scheduleapi.entity.Schedule;
+import org.example.scheduleapi.exception.PasswordMismatchException;
 import org.example.scheduleapi.repository.ScheduleRepository;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -27,7 +28,8 @@ public class ScheduleServiceImpl implements SchedulesService {
     @Override
     @Transactional
     public ScheduleResponseDto saveSchedule(ScheduleRequestDto requestDto) {
-        if (requestDto.getTitle() == null || requestDto.getContents() == null || requestDto.getTitle() == null || requestDto.getAuthor() == null)
+        if (requestDto.getTitle() == null || requestDto.getContents() == null ||
+                requestDto.getAuthor() == null || requestDto.getPassword() == null)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Title and content cannot be null");
 
         if (requestDto.getTitle().length() > 30 ||  requestDto.getContents().length() > 200)
@@ -74,7 +76,7 @@ public class ScheduleServiceImpl implements SchedulesService {
         Schedule schedule = scheduleRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Does not exist id =" + id));
 
         if (!password.equals(schedule.getPassword())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Password does not match");
+            throw new PasswordMismatchException("비밀번호가 일치하지 않습니다.");
         }
 
         schedule.update(title, author);
@@ -93,7 +95,7 @@ public class ScheduleServiceImpl implements SchedulesService {
         Schedule schedule = scheduleRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Does not exist id =" + id));
 
         if (!password.equals(schedule.getPassword())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Password does not match");
+            throw new PasswordMismatchException("비밀번호가 일치하지 않습니다.");
         }
 
         scheduleRepository.delete(schedule);
